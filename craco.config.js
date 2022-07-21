@@ -5,5 +5,12 @@ module.exports = {
     alias: {
       react: resolvePackage("./node_modules/react"),
     },
+    external: {
+      react: "React",
+    },
+  },
+  babel: {
+    presets: ["@babel/preset-react", "@babel/preset-env"],
+    plugins: ["@babel/plugin-proposal-class-properties"],
   },
 };
