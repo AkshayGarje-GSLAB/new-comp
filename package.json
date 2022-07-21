@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "start": "cross-env SKIP_PREFLIGHT_CHECK=true craco start",
-    "build": "cross-env SKIP_PREFLIGHT_CHECK=true BABEL_ENV=build-components babel src/lib --root-mode root --out-dir build --copy-files",
+    "build": "cross-env SKIP_PREFLIGHT_CHECK=true BABEL_ENV=build-components babel src/lib --root-mode root --out-dir build --copy-files"
     },
   "dependencies": {
     "@emotion/react": "^11.9.3",
