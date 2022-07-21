@@ -8,3 +8,5 @@ const Button = (props) => {
 Button.propTypes = { ...MuiButton.propTypes };
 
 export default Button;
+
+export { default as Button } from ".";
