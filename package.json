@@ -5,7 +5,7 @@
   "author": "IIHT",
   "homepage": "",
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "build/index.js",
   "babel": {
     "presets": [
       "@babel/preset-env",
@@ -13,10 +13,10 @@
     ]
   },
   "directories": {
-    "lib": "lib"
+    "build": "build"
   },
   "files": [
-    "lib"
+    "build"
   ],
   "scripts": {
     "start": "cross-env SKIP_PREFLIGHT_CHECK=true craco start",
