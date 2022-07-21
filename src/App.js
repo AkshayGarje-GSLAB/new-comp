@@ -1,443 +1,593 @@
 import React, { useState } from "react";
-import moment from "moment";
-import { Button } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import {
-  ButtonComponent,
-  InputComponent,
-  ModalComponent,
-  CheckBox,
-  RadioButton,
-  SliderComponent,
-  SelectComponent,
-  Pagination,
-  FullPieChart,
-  HalfPieChart,
-  CustomToolTip,
-  BarChart,
-  AreaChartComponent,
-  TableComponent,
-  AlertComponent,
-  Text,
-  EllipsisOptionComponent,
-  Title,
-  MultiSelect,
-  DraggerComponent,
-  RateComponent,
-  ProgressBarComponent,
-  DurationComponent,
-} from "./lib/index";
-import { data, columns, lineData1, barData, colors1, halfPieData, colors3, dataWith2Objects1 } from "./data/ChartsData";
-import { alertTypes } from "./data/AlertMessageData";
-import { arrayOptions } from "./data/MultiSelectData";
-import colors from "./lib/common/styles/colors.module.scss";
-import "./lib/common/styles/common.scss";
-import "./App.scss";
+import { styled } from "@mui/material/styles";
+import Button from "./lib/components/Button";
+import Autocomplete from "./lib/components/Autocomplete";
+import TextField from "./lib/components/TextField";
+import FormGroup from "./lib/components/Form/FormGroup";
+import FormControlLabel from "./lib/components/Form/FormControlLabel";
+import FormControl from "./lib/components/Form/FormControl";
+import FormLabel from "./lib/components/Form/FormLabel";
+import Checkbox from "./lib/components/Checkbox";
+import RadioGroup from "./lib/components/RadioGroup";
+import Radio from "./lib/components/RadioGroup/Radio";
+import MenuItem from "./lib/components/Menu/MenuItem";
+import Select from "./lib/components/Select";
+import InputLabel from "./lib/components/Input/InputLabel";
+import Switch from "./lib/components/Switch";
+import Avatar from "./lib/components/Avatar";
+import Badge from "./lib/components/Badge";
+import Chip from "./lib/components/Chip";
+import Divider from "./lib/components/Divider";
+import DataGrid from "./lib/components/DataGrid";
+import Tooltip from "./lib/components/Tooltip";
+import Accordion from "./lib/components/Accordion";
+import AccordionSummary from "./lib/components/Accordion/AccordionSummary";
+import AccordionDetails from "./lib/components/Accordion/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Card from "./lib/components/Card";
+import Modal from "./lib/components/Modal";
+import Pagination from "./lib/components/Pagination";
+import Stepper from "./lib/components/Stepper";
+import Step from "./lib/components/Stepper/Step";
+import StepLabel from "./lib/components/Stepper/StepLabel";
+import { Box } from "@mui/material";
+import PropTypes from "prop-types";
+import Tabs from "./lib/components/Tabs";
+import Tab from "./lib/components/Tabs/Tab";
+import TextArea from "./lib/components/TextArea";
+import DatePicker from "./lib/components/Date";
+import CircularProgress from "./lib/components/Progress/CircularProgress";
+import LinearProgress from "./lib/components/Progress/LinearProgress";
+import Menu from "./lib/components/Menu";
+import Breadcrumbs from "./lib/components/Breadcrumbs";
+import Link from "./lib/components/Breadcrumbs/Link";
+import Backdrop from "./lib/components/Backdrop";
+import MiniDrawer from "./lib/components/Drawer";
+import { red, blue, brown, green } from "@mui/material/colors";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-function App() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [radioBtn, setRadioBtn] = useState("1");
-  const text = "Text";
-  const title = "Title";
-  const [rateValue, setRateValue] = useState(2.5);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
-  const [isSelectDurationVisible, setIsSelectDurationVisible] = useState(false);
-  const [selected, setSelected] = useState(0);
+const themeRP = createTheme({
+  palette: {
+    primary: { main: red[500] },
+    secondary: { main: green[500] },
+    type: "dark",
+  },
+});
 
-  const selectedDateChange = (dates, dateStrings) => {
-    setStartDate(dateStrings[0]);
-    setEndDate(dateStrings[1]);
-    const days =
-      Math.abs(moment(dateStrings[0], "DD/MM/YYYY").startOf("day").diff(moment(dateStrings[1], "DD/MM/YYYY").startOf("day"), "days")) + 1;
-    setSelected(days);
-  };
+const themeBB = createTheme({
+  palette: {
+    primary: { main: brown[500] },
+    secondary: { main: blue[500] },
+    type: "dark1",
+  },
+});
 
-  //function will be implemented later
-  // const applyDuration = () => {
-  //   setIsSelectDurationVisible(false);
-  //   console.log("From: ", startDate, " To: ", endDate);
-  // };
-
-  const displayCalendar = (open) => {
-    setIsSelectDurationVisible(!open);
-  };
-  const cancel = () => {
-    setIsSelectDurationVisible(false);
-  };
-
-  const onInputChange = (e) => {
-    console.log("onInputChange", e.target.value);
-  };
-
-  const onClickHandler = () => {
-    console.log("Clicked from app");
-  };
-
-  const onChangeHandler = (e) => {
-    console.log("Radio btn val:", e.target.value);
-    setRadioBtn(e.target.value);
-  };
-
-  const radioOptions = [
-    { label: "Label 1", value: "1" },
-    { label: "Label 2", value: "2" },
-  ];
-  const radioOptions_1 = [
-    { label: "Label 1", value: "1" },
-    { label: "Label 2", value: "2" },
-  ];
-
-  const iconListOptions = [
-    {
-      label: "Finland",
-      value: "1",
-      key: "finland",
-      icon: "https://img.icons8.com/office/16/000000/finland.png",
+const columns = [
+  { field: "id", headerName: "ID", width: 70 },
+  { field: "firstName", headerName: "First name", width: 130 },
+  { field: "lastName", headerName: "Last name", width: 130 },
+  {
+    field: "age",
+    headerName: "Age",
+    type: "number",
+    width: 90,
+  },
+  {
+    field: "fullName",
+    headerName: "Full name",
+    description: "This column has a value getter and is not sortable.",
+    sortable: false,
+    width: 160,
+    valueGetter: (params) =>
+      `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+  },
+  {
+    field: "Print",
+    renderCell: (cellValues) => {
+      return (
+        <Tooltip title={cellValues.row.id}>
+          <span>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(event) => {
+                console.log(cellValues.row.age);
+              }}
+            >
+              {cellValues.row.id}
+            </Button>
+          </span>
+        </Tooltip>
+      );
     },
-    {
-      label: "Switzerland",
-      value: "2",
-      key: "switzerland",
-      icon: "https://img.icons8.com/office/16/000000/switzerland.png",
+  },
+];
+
+const rows = [
+  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+];
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
     },
-  ];
-
-  const groupList = [
-    {
-      groupKey: "group_1",
-      groupLabel: "Asia",
-      list: [
-        { key: "India", label: "India", value: "ind" },
-        { key: "Nepal", label: "Nepal", value: "nep" },
-      ],
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
     },
-    {
-      groupKey: "group_2",
-      groupLabel: "Pacific",
-      list: [
-        { key: "Bhutan", label: "Bhutan", value: "bhu", disable: true },
-        { key: "Japan", label: "Japan", value: "jap" },
-      ],
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
     },
-  ];
+  },
+}));
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+const data = [
+  { label: "The Redemption", id: 1 },
+  { label: "The Godfather", id: 2 },
+  { label: "The Godfather: Part II", id: 3 },
+];
+
+const style = {
+  position: "absolute",
+  padding: 20,
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 900,
+  backgroundColor: "white",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+const steps = [
+  "Select campaign settings",
+  "Create an ad group",
+  "Create an ad",
+];
+
+function App(props) {
+  const [age, setAge] = useState("");
+  const [open, setOpen] = useState(false);
+  const [bdopen, bdSetOpen] = useState(false);
+  const [theme, setTheme] = useState(true);
+  const [value, setValue] = useState(0);
+  const [dateValue, setDateValue] = useState(new Date("2014-08-18T21:11:54"));
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
-  const onChangeSlider = (value) => {
-    console.log("onChange: ", value);
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+  const isStepFailed = (step) => {
+    return step === 1;
   };
 
-  const onAfterChangeSlider = (value) => {
-    console.log("onAfterChange: ", value);
-  };
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onRateChange = (value) => {
-    setRateValue(value);
+  const handleToggle = () => {
+    bdSetOpen(true);
+    setTimeout(() => bdSetOpen(false), 3000);
   };
 
   return (
-    <div className="App theme-default">
-      <div className="componentWrapper">
-        <span>Primary Button :</span>
-        <ButtonComponent type="primary">{"Library Button"}</ButtonComponent>
-      </div>
-      <div className="componentWrapper">
-        <span>Input with Predix and postfix :</span>
-        <InputComponent
-          size="medium"
-          placeholder="Enter a name "
-          allowClear={false}
-          addonBefore={false}
-          addonAfter={false}
-          prefix={false}
-          suffix={false}
-          defaultValue="Hello world"
-          onChange={onInputChange}
-          onPressEnter={onInputChange}
-          autoFocusButton="autoFocusButton"
-          width="25rem"
-          height="100"
-        />
-      </div>
-      <div className="componentWrapper">
-        <span>Modal Component :</span>
-        <ModalComponent
-          button={true}
-          showModal={showModal}
-          visible={isModalVisible}
-          handleOk={handleOk}
-          handleCancel={handleCancel}
-          title="Delete User"
-          message="Are you sure you want to delete this"
-          firstName="Demo"
-          lastName="User"
-          closable={true}
-          logo={<ExclamationCircleFilled />}
-          cancelBtnName="Cancel"
-          okBtnName="Delete"
-        >
-          <ModalComponent.Icon>
-            <ExclamationCircleFilled />
-          </ModalComponent.Icon>
-          <ModalComponent.H1>{"Delete User"}</ModalComponent.H1>
-          <ModalComponent.Text>
-            {"Are you sure you want to delete this"} {`Demo User?`}
-          </ModalComponent.Text>
-          <div className="modal-btn-wrapper">
-            <ModalComponent.Cancel onClick={handleCancel}>{"Cancel"}</ModalComponent.Cancel>
-            <ModalComponent.Proceed onClick={handleOk}>{"Delete"}</ModalComponent.Proceed>
-          </div>
-        </ModalComponent>
-      </div>
-      <div className="componentWrapper_test">
-        <span>Single CheckBox :</span>
-        <CheckBox defaultChecked disabled onClick={onClickHandler} isGroup={false}>
-          {"Library Checkbox"}
-        </CheckBox>
-      </div>
-      <div className="componentWrapper_test">
-        <span>Group of CheckBox : </span>&nbsp;&nbsp;
-        <CheckBox options={radioOptions} disabled={false} onClick={onClickHandler} isGroup={true} />
-      </div>
-      <div className="componentWrapper_test">
-        <span>Radio Button :</span>&nbsp;&nbsp;
-        <RadioButton options={radioOptions} disabled={false} value={radioBtn} onChange={onChangeHandler} />
-      </div>
-      <div className="componentWrapper_test">
-        <span>Radio Button :</span>&nbsp;&nbsp;
-        <RadioButton options={radioOptions_1} disabled={true} value={radioBtn} onChange={onChangeHandler} />
-      </div>
-      <div className="componentWrapper">
-        <span>Group of CheckBox : </span>
-        <CheckBox options={radioOptions} disabled={false} onClick={onClickHandler} isGroup={true} />
-      </div>
-      <div className="componentWrapper">
-        <span>Radio Button :</span>
-        <RadioButton options={radioOptions} disabled={false} value={radioBtn} onChange={onChangeHandler} />
-      </div>
-      <div className="componentWrapper">
-        <span>Select Dropdown with icon :</span>
-        <SelectComponent
-          arrow={true}
-          isGroup={false}
-          search={true}
-          width={160}
-          height={28}
-          optionData={iconListOptions}
-          allowClear={true}
-          disabled={false}
-          placeholder="Select label"
-          onChange={handleChange}
-        />
-      </div>
-      <div className="componentWrapper">
-        <span>Select Dropdown with grouping :</span>
-        <SelectComponent
-          arrow={true}
-          search={true}
-          isGroup={true}
-          width={300}
-          height={28}
-          mode="tags"
-          optionData={groupList}
-          allowClear={true}
-          disabled={false}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="componentWrapper">
-        <SliderComponent
-          onChange={onChangeSlider}
-          onAfterChange={onAfterChangeSlider}
-          defaultValue={20}
-          disabled={false}
-          autoFocus={true}
-          dots={false}
-          reverse={false}
-        />
-      </div>
-      <div className="componentWrapper">
-        <Pagination
-          total={85}
-          defaultPageSize={10}
-          defaultCurrent={1}
-          disabled={false}
-          pageSizeOptions={[10, 20, 40, 100]}
-          position="topLeft"
-        />
-      </div>
-      <div className="componentWrapper">
-        <FullPieChart
-          width={800}
-          height={400}
-          startAngle={90}
-          endAngle={450}
-          data={dataWith2Objects1}
-          COLORS={colors3}
-          coordinateX={300}
-          coordinateY={150}
-          innerRadius={72}
-          outerRadius={80}
-          paddingAngle={0}
-          position="center"
-          verticalAlign="middle"
-          layout="horizontal"
-          align="right"
-          fill={colors.colorBlue10}
-          dataKey="value"
-        />
-      </div>
-      <div className="componentWrapper">
-        <HalfPieChart
-          width={600}
-          height={270}
-          data={halfPieData}
-          COLORS={colors1}
-          coordinateX={300}
-          coordinateY={150}
-          startAngle={180}
-          endAngle={0}
-          innerRadius={72}
-          outerRadius={80}
-          position="center"
-        />
-      </div>
-      <div className="componentWrapper">
-        <BarChart
-          active={true}
-          data={barData}
-          color1={colors.colorBlue12}
-          color2={colors.colorgray6}
-          width={450}
-          height={200}
-          hideX={false}
-          hideY={true}
-          axisLineX={false}
-          tickLineX={false}
-          dataKey="name"
-        />
-      </div>
-      <div className="componentWrapper">
-        <AreaChartComponent
-          containerWidth="55%"
-          aspect={2.5}
-          width="500"
-          height="400"
-          data={lineData1}
-          hideX={false}
-          hideY={true}
-          horizontal={false}
-          vertical={true}
-          strokeWidth={6}
-          strokeDasharray="4"
-          color={[colors.colorBlue12]}
-          gradientColor={colors.colorBlue13}
-          marginTop={10}
-          marginRight={30}
-          marginLeft={40}
-          marginBottom={0}
-          axisLineX={false}
-          tickLineX={false}
-          strokes={false}
-          areaDataKey={["pv"]}
-        />
-      </div>
-      <div className="componentWrapper">
-        <TableComponent
-          columns={columns}
-          rows={data}
-          total={85}
-          defaultPageSize={10}
-          defaultCurrent={1}
-          paginationDisabled={false}
-          position="bottomRight"
-          pageSizeOptions={[20, 30, 100]}
-          rowSelectionEnabled
-        />
-      </div>
-      <div className="componentWrapper">
-        <CustomToolTip title="Hello-world" placement="topLeft">
-          <Button> Hello world </Button>
-        </CustomToolTip>
-      </div>
-      <p> Mixins is working properly</p>
+    <>
+      <ThemeProvider theme={theme ? themeRP : themeBB}>
+        <Box sx={{ display: "flex" }}>
+          <MiniDrawer />
 
-      {alertTypes.map((res, index) => {
-        return (
-          <div key={index}>
-            <AlertComponent type={res.type} message={res.message} showIcon={res.showIcon} closable={res.closable} />
-          </div>
-        );
-      })}
-      <div>
-        <div>
-          <Text className="body-short-text">{text}</Text>
-          <Text className="body-long-text">{text}</Text>
-          <Text className="label-bold">{text}</Text>
-          <Text className="label-regular">{text}</Text>
-          <Text className="label-graph">{text}</Text>
-          <br />
-          <Title className="heading">{title}</Title>
-          <Title className="sub-heading">{title}</Title>
-          <Title className="title">{title}</Title>
-          <Title className="sub-title">{title}</Title>
-          <Title className="body-title">{title}</Title>
-        </div>
-      </div>
-      <div>
-        <MultiSelect
-          mode="multiple"
-          placeholder="Enter"
-          options={arrayOptions}
-          onChange={(value) => {
-            console.log(value);
-          }}
-          maxTagCount="responsive"
-        ></MultiSelect>
-      </div>
-      <div className="dragger-test">
-        <DraggerComponent accept={[".png", ".jpg", ".svg"]} child={"Hello"}></DraggerComponent>
-      </div>
-      <EllipsisOptionComponent />
-      <div>
-        <RateComponent allowClear={false} allowHalf={true} value={rateValue} onChange={onRateChange} />
-      </div>
-      <div>
-        <ProgressBarComponent percent={50} size="small" className="progress-bar" showInfo />
-      </div>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={theme}
+                  onChange={() => setTheme(!theme)}
+                  name="gilad"
+                />
+              }
+              label="Theme"
+            />
+          </FormGroup>
 
-      <div>
-        <DurationComponent
-          isSelectDurationVisible={isSelectDurationVisible}
-          startDate={startDate}
-          endDate={endDate}
-          // applyDuration={applyDuration}
-          onChange={selectedDateChange}
-          selected={selected}
-          cancel={cancel}
-          displayCalendar={displayCalendar}
-          day=" day"
-          days=" days"
-          applyBtnName="Apply"
-          cancelBtnName="Cancel"
-        />
-      </div>
-    </div>
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              backgroundColor: (theme) => theme.palette.secondary.main,
+            }}
+          >
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={data}
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Movie" />}
+            />
+            <Button variant="text">Text</Button>
+            <Button variant="contained">Contained</Button>
+            <Button variant="outlined">Outlined</Button>
+            <Button>Primary</Button>
+            <Button color="secondary">secondary</Button>
+            <Button disabled>Disabled</Button>
+            <Button href="#text-buttons">Link</Button>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label="Label"
+              />
+              <FormControlLabel
+                disabled
+                control={<Checkbox />}
+                label="Disabled"
+              />
+            </FormGroup>
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+              <RadioGroup defaultValue="female" name="radio-buttons-group">
+                <FormControlLabel
+                  value="female"
+                  control={<Radio />}
+                  label="Female"
+                />
+                <FormControlLabel
+                  value="male"
+                  control={<Radio />}
+                  label="Male"
+                />
+                <FormControlLabel
+                  value="other"
+                  control={<Radio />}
+                  label="Other"
+                />
+              </RadioGroup>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Age</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={age}
+                label="Age"
+                onChange={handleChange}
+              >
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label="Label"
+              />
+            </FormGroup>
+            <TextField
+              required
+              id="outlined-required"
+              label="Required"
+              defaultValue="Hello World"
+            />
+            <TextField
+              error
+              id="standard-error-helper-text"
+              label="Error"
+              defaultValue="Hello World"
+              helperText="Incorrect entry."
+              variant="standard"
+            />
+
+            <div
+              role="presentation"
+              onClick={(event) => {
+                console.info("You clicked a breadcrumb.");
+              }}
+            >
+              <Breadcrumbs separator="›" aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/MUI">
+                  MUI
+                </Link>
+                <Link underline="hover" color="inherit" href="/Core">
+                  Core
+                </Link>
+                <Link underline="hover" color="inherit" href="/CoreNew">
+                  CoreNew
+                </Link>
+                <Typography color="text.primary">Breadcrumbs</Typography>
+              </Breadcrumbs>
+            </div>
+
+            <Avatar>AG</Avatar>
+            <Divider />
+            <Avatar>OP</Avatar>
+            <Divider variant="middle" />
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              variant="dot"
+            >
+              <Avatar>MY</Avatar>
+            </StyledBadge>
+
+            <Chip
+              label="Clickable"
+              variant="outlined"
+              onClick={() => {}}
+              onDelete={() => {}}
+            />
+
+            <div style={{ height: 400, width: "100%" }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                pagination
+                multiple
+                onCellClick={(event) => {
+                  console.log(event);
+                }}
+                onSelectionModelChange={(event) => {
+                  console.log(event);
+                }}
+              />
+            </div>
+
+            <Tooltip title="I am Tooltip">
+              <span style={{ fontSize: 40 }}>Tooltip</span>
+            </Tooltip>
+
+            <div>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>Accordion 1</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse malesuada lacus ex, sit amet blandit leo
+                    lobortis eget.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography>Accordion 2</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse malesuada lacus ex, sit amet blandit leo
+                    lobortis eget.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion disabled>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel3a-content"
+                  id="panel3a-header"
+                >
+                  <Typography>Disabled Accordion</Typography>
+                </AccordionSummary>
+              </Accordion>
+            </div>
+            <span>
+              <Card
+                style={{ width: 200, height: 300, margin: 20, padding: 20 }}
+              >
+                <Box>
+                  Supplemental actions within the card are explicitly called out
+                  using icons, text, and UI controls, typically placed at the
+                  bottom of the card. Here's an example of a media control card.
+                </Box>
+              </Card>
+            </span>
+
+            <div>
+              <Button
+                id="basic-button"
+                aria-controls={openMenu ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={openMenu ? "true" : undefined}
+                onClick={(event) => {
+                  setAnchorEl(event.currentTarget);
+                }}
+              >
+                Open Menu
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleMenuClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+                <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+              </Menu>
+            </div>
+
+            <div>
+              <Button onClick={handleOpen}>Open modal</Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <div style={style}>
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                  >
+                    Text in a modal
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Text in a modalText in a modalText in a modalText in a
+                    modalText in a modal
+                  </Typography>
+                </div>
+              </Modal>
+            </div>
+            <Pagination count={10} />
+            <div sx={{ width: "100%" }}>
+              <Stepper activeStep={1}>
+                {steps.map((label, index) => {
+                  const labelProps = {};
+                  if (isStepFailed(index)) {
+                    labelProps.optional = (
+                      <Typography variant="caption" color="error">
+                        Alert message
+                      </Typography>
+                    );
+
+                    labelProps.error = true;
+                  }
+
+                  return (
+                    <Step key={label}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              <Box sx={{ width: "100%" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={value}
+                    onChange={(event, newValue) => {
+                      setValue(newValue);
+                    }}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="Item One" {...a11yProps(0)} />
+                    <Tab label="Item Two" {...a11yProps(1)} />
+                    <Tab label="Item Three" {...a11yProps(2)} />
+                  </Tabs>
+                </Box>
+                <TabPanel value={value} index={0}>
+                  Item One
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                  Item Two
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                  Item Three
+                </TabPanel>
+              </Box>
+            </div>
+            <TextArea
+              aria-label="empty textarea"
+              placeholder="Empty"
+              style={{ width: 200 }}
+            ></TextArea>
+            <DatePicker
+              label="Basic example"
+              value={dateValue}
+              onChange={(newValue) => {
+                setDateValue(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+
+            <Box sx={{ width: "100%" }}>
+              <LinearProgress />
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <CircularProgress />
+              <CircularProgress variant="determinate" value={25} />
+            </Box>
+            <div>
+              <Button onClick={handleToggle}>Show backdrop</Button>
+              <Backdrop
+                sx={{
+                  color: "#fff",
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={bdopen}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
+            </div>
+          </Box>
+        </Box>
+      </ThemeProvider>
+    </>
   );
 }
 
