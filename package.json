@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "start": "cross-env SKIP_PREFLIGHT_CHECK=true craco start",
-    "build": "rimraf lib && cross-env SKIP_PREFLIGHT_CHECK=true BABEL_ENV=build-components babel src/lib --root-mode root --out-dir src/comp-lib --copy-files",
+    "build": "cross-env SKIP_PREFLIGHT_CHECK=true BABEL_ENV=build-components babel src/lib --root-mode root --out-dir build --copy-files",
     "build-lib:watch": "babel src/lib --out-dir lib --copy-files --watch",
     "prepublish": "npm run build-lib"
   },
