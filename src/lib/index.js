@@ -1,1 +1,1 @@
-export { Accordion } from "./components/Accordion";
+export { default as Button } from "./components/Button";
